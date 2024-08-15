@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.sql.coercions import expect
+from fastapi import APIRouter, HTTPException
 from app.crud.task_crud import TaskCRUD
 from ..schemas.task_schemas import TaskCreate, Task
 from app.dependencies import Dependency

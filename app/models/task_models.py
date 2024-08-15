@@ -1,5 +1,4 @@
 from peewee import Model, IntegerField, CharField, TextField, DateTimeField, fn
-from sqlalchemy import Column, Integer, String, DateTime, Text, func
 
 from app.db.database import database_instance
 
