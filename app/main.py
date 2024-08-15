@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 
-from tests.unit_tests.cruds.test_tasks_crud import task_crud
 from .api.endpoints import TaskRoutes
 from .core.initializer import AppInitializer
-from .crud.task_crud import TaskCRUD
 from .db.database import database_instance
 from .dependencies import Dependency
 
