@@ -3,6 +3,8 @@ from unittest.mock import patch, MagicMock
 from app.core.initializer import AppInitializer  # Adjust the import based on your structure
 from app.db.database import database_instance, Database
 from app.models.task_models import Task
+from app.models.user_models import User
+
 
 @pytest.fixture
 def mock_app():
@@ -27,4 +29,4 @@ def test_initialize_spy(app_initializer, mock_database):
     app_initializer.initialize()
     assert app_initializer.app.state.db == mock_database
 
-    app_initializer.db.create_tables.assert_called_once_with([Task])
+    app_initializer.db.create_tables.assert_called_once_with([Task, User])
