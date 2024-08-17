@@ -1,4 +1,5 @@
 from app.db.database import Database
+from app.utils.auth_service import AuthService
 
 
 class Dependency:
@@ -11,3 +12,6 @@ class Dependency:
             yield self.db.database
         finally:
             self.db.close()
+
+    def get_auth_service(self):
+        return AuthService(self.db)

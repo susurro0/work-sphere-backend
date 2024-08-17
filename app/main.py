@@ -25,3 +25,4 @@ def create_app() -> FastAPI:
 
 # Create the FastAPI app instance
 app = create_app()
+
