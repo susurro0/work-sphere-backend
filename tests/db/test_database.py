@@ -9,7 +9,6 @@ def mock_database():
         mock_db_instance = MagicMock()
         MockPostgresqlDatabase.return_value = mock_db_instance
         yield mock_db_instance
-
 @pytest.fixture
 def database_instance(mock_database):
     # Create a Database instance using the mock database URL

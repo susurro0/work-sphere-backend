@@ -19,7 +19,6 @@ class Database:
 
     def create_tables(self, models):
         """Create tables in the database."""
-        """Create tables in the database."""
         with self.database:
             self.database.create_tables(models, safe=True)
 
