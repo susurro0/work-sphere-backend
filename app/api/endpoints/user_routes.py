@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from app.crud.user_crud import UserCRUD
 from ..schemas.user_schemas import UserCreate, User, TokenResponse, UserBase
 from app.dependencies import Dependency
-
+from app.models.user_models import User as UserModel
 
 class UserRoutes:
     def __init__(self, dependency: Dependency, user_crud=UserCRUD):
@@ -41,7 +41,7 @@ class UserRoutes:
         def login(login_request: OAuth2PasswordRequestForm = Depends()):
             try:
                 user = self.auth_service.authenticate_user(login_request.username, login_request.password)
-                if isinstance(user, User):
+                if isinstance(user, UserModel):
                     access_token = self.auth_service.create_access_token(data={"sub": user.username})
                     return TokenResponse(access_token=access_token, token_type="bearer")
                 else:

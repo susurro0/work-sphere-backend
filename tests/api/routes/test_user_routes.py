@@ -7,6 +7,7 @@ from app.api.endpoints.user_routes import UserRoutes  # Adjust this import based
 from app.dependencies import Dependency
 from app.crud.user_crud import UserCRUD
 from app.api.schemas.user_schemas import UserCreate, User
+from app.models.user_models import User  as UserModel
 from app.utils.auth_service import AuthService
 
 
@@ -23,7 +24,7 @@ def client_success():
 
     # Create a mock for the AuthService
     mock_auth_service = create_autospec(AuthService)
-    mock_auth_service.authenticate_user.return_value = User(id=1, username='username', email='a@b.com')
+    mock_auth_service.authenticate_user.return_value = UserModel(id=1, username='username', email='a@b.com', role='user')
     mock_auth_service.create_access_token.return_value = 'testtoken'
     mock_auth_service.verify_token.return_value = User(id=1, username='username', email='a@b.com', role='user')
     # Create a mock for the Dependency
@@ -198,7 +199,7 @@ def test_login_user_exception(client_exception_500):
     assert response.status_code == 401
     assert response.json() == {'detail': 'Invalid credentials'}
 
-def test_login_user_exception_500(client_exception_500):
+def test_login_user_exception_500():
     """Test handling of exceptions during user login."""
 
     login_data = {'username': 'username', 'password': 'Password1'}
@@ -213,7 +214,7 @@ def test_login_user_exception_500(client_exception_500):
 
     # Create a mock for the AuthService
     mock_auth_service = create_autospec(AuthService)
-    mock_auth_service.authenticate_user.return_value = User(id=1, username='username', email='a@b.com')
+    mock_auth_service.authenticate_user.return_value = UserModel(id=1, username='username', email='a@b.com')
     mock_auth_service.create_access_token.return_value.side_effect = Exception("Error")
 
     # Create a mock for the Dependency
