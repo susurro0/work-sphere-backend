@@ -1,3 +1,5 @@
+import os
+
 import pytest
 import jwt
 from datetime import datetime, timedelta
@@ -31,7 +33,7 @@ def test_create_access_token(auth_service):
     token = auth_service.create_access_token(data, expires_delta=expires_delta)
 
     # Decode the token to verify its content
-    decoded_token = jwt.decode(token, auth_service.SECRET_KEY, algorithms=[auth_service.ALGORITHM])
+    decoded_token = jwt.decode(token, os.getenv('SECRET_KEY'), algorithms=[auth_service.ALGORITHM])
 
     # Assertions
     assert decoded_token["sub"] == "testuser"
@@ -46,7 +48,7 @@ def test_create_access_token_with_custom_expiration(auth_service):
     expires_delta = timedelta(minutes=10)
     token = auth_service.create_access_token(data, expires_delta)
 
-    decoded_token = jwt.decode(token, auth_service.SECRET_KEY, algorithms=[auth_service.ALGORITHM])
+    decoded_token = jwt.decode(token, os.getenv('SECRET_KEY'), algorithms=[auth_service.ALGORITHM])
     assert decoded_token["sub"] == "testuser"
     assert datetime.fromtimestamp(decoded_token["exp"]) < datetime.utcnow() + expires_delta
 
@@ -54,14 +56,24 @@ def test_create_access_token_with_custom_expiration(auth_service):
 @patch('app.models.user_models.User.get')
 def test_authenticate_user_success(mock_user_get, auth_service):
     """Test user authentication with correct credentials."""
+    # Create a mock user with valid password hash
     mock_user = MagicMock(spec=User)
+    mock_user.password = 'hashedpassword'  # Mock the hashed password value
+
+    # Mock verify_password to return True
     mock_user.verify_password.return_value = True
     mock_user_get.return_value = mock_user
 
-    user = auth_service.authenticate_user("testuser", "correctpassword")
+    # Mock the password hasher to avoid actual hashing
+    with patch('argon2.PasswordHasher.verify') as mock_verify:
+        mock_verify.return_value = True
 
-    assert user == mock_user
-    mock_user.verify_password.assert_called_once_with("correctpassword")
+        # Authenticate the user
+        user = auth_service.authenticate_user("testuser", "correctpassword")
+
+        # Assertions
+        assert user == mock_user
+        mock_verify.assert_called_once_with('hashedpassword', 'correctpassword')
 
 
 @patch('app.models.user_models.User.get')
@@ -71,13 +83,16 @@ def test_authenticate_user_failure(mock_user_get, auth_service):
     mock_user.verify_password.return_value = False
     mock_user_get.return_value = mock_user
 
-    user = auth_service.authenticate_user("testuser", "wrongpassword")
+    # Mock the password hasher to avoid actual hashing
+    with patch('argon2.PasswordHasher.verify') as mock_verify:
+        mock_verify.return_value = False
+        user = auth_service.authenticate_user("testuser", "wrongpassword")
 
-    assert user is None
-    mock_user.verify_password.assert_called_once_with("wrongpassword")
+        assert user is None
+        mock_verify.assert_called_once()
 
 
-@patch('app.models.user_models.User.get', side_effect=User.DoesNotExist)
+@patch('app.models.user_models.User.get', side_effect=DoesNotExist)
 def test_authenticate_user_does_not_exist(mock_user_get, auth_service):
     """Test user authentication when user does not exist."""
     user = auth_service.authenticate_user("nonexistentuser", "password")
