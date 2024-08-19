@@ -36,7 +36,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: conint(gt=0)
 
-class TokenResponse(BaseModel):
+class TokenResponse(UserBase):
     access_token: str
     token_type: str = "bearer"
 

@@ -43,7 +43,7 @@ class UserRoutes:
                 user = self.auth_service.authenticate_user(login_request.username, login_request.password)
                 if isinstance(user, UserModel):
                     access_token = self.auth_service.create_access_token(data={"sub": user.username})
-                    return TokenResponse(access_token=access_token, token_type="bearer")
+                    return TokenResponse(username=user.username, email=user.email, role=user.role, access_token=access_token, token_type="bearer")
                 else:
                     raise HTTPException(status_code=401, detail="Invalid credentials")
             except HTTPException as e:

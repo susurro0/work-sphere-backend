@@ -181,7 +181,7 @@ def test_login_user(client_success):
 
     # Assertions
     assert response.status_code == 200
-    assert response.json() == {'access_token': 'testtoken', 'token_type': 'bearer'}
+    assert response.json() == {'username':'username', 'email':'a@b.com', 'role':'user', 'access_token': 'testtoken', 'token_type': 'bearer'}
 
 def test_login_user_exception(client_exception_500):
     """Test handling of exceptions during user login."""

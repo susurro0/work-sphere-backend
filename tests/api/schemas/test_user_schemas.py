@@ -82,7 +82,7 @@ def test_user_model_invalid_id(id, username, email):
 
 # Tests for TokenResponse model
 def test_token_response_valid():
-    token_response = TokenResponse(access_token="some_token")
+    token_response = TokenResponse(username="userN", email="a@b.com",role='test', access_token="some_token")
     assert token_response.access_token == "some_token"
     assert token_response.token_type == "bearer"  # Default value
 
@@ -92,7 +92,7 @@ def test_token_response_valid():
 ])
 def test_token_response_invalid(access_token):
     with pytest.raises(ValidationError) as exc_info:
-        TokenResponse(access_token=access_token)
+        TokenResponse(username="userN", email="a@b.com",role='test', access_token=access_token)
     assert ("Value error, Access token cannot be empty" in str(exc_info.value) or
             "Input should be a valid string" in str(exc_info.value) or
             "Value error, Access token cannot be empty" in str(exc_info.value))
