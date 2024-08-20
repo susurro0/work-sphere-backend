@@ -22,5 +22,5 @@ class Database:
         with self.database:
             self.database.create_tables(models, safe=True)
 
-db_url = f"postgresql://{os.getenv('USER_NAME')}:{os.getenv('USER_PASSWORD')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
+db_url = f"{os.getenv('DATABASE_PUBLIC_URL')}"
 database_instance = Database(db_url)
