@@ -13,6 +13,7 @@ class PathfinderRoutes:
 
         @self.router.post("/api/pathfinder/", response_model=PathfinderResponse)
         def find_path(request: PathfinderRequest):
+            path = []
             try:
                 # Select the algorithm based on the request
                 if request.algorithm == "a-star":
@@ -23,9 +24,6 @@ class PathfinderRoutes:
                     path = self.dfs_search(request.grid)
                 elif request.algorithm == "bfs":
                     path = self.bfs_search(request.grid)
-                else:
-                    raise HTTPException(status_code=400, detail="Algorithm not supported")
-
                 return PathfinderResponse(path=path)
             except Exception as e:
                 logging.error(f"Failed to find path: {e}")

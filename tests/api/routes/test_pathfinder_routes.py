@@ -81,7 +81,6 @@ def test_dijkstra_algorithm_no_path():
 
     assert data["path"] == []  # No path should be found
 
-
 def test_dfs_simple_path():
     grid = [
             [1, 0, 0, 0, 0],
@@ -260,3 +259,26 @@ def test_bfs_multiple_equal_paths():
         [[0, 0], [0, 1], [0, 2], [0, 3], [1, 3], [2, 3]]
     ]
     assert data["path"] in expected_paths
+
+
+def test_find_path_unsupported_algorithm():
+    request_data = {
+        "grid": [
+            [1, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 2]
+        ],
+        "algorithm": "unkown_algorithm"
+    }
+
+    try:
+        client.post("/api/pathfinder/", json=request_data)
+        assert False, "Expected a RequestValidationError but did not get one."
+    except Exception as e:
+        print("Error:", str(e))
+        assert any(
+            error["msg"] == "Input should be 'a-star', 'dijkstra', 'dfs' or 'bfs'"
+            for error in e.errors()
+        ), "The error message for unsupported algorithm should be as expected."
+
+
