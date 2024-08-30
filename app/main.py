@@ -29,7 +29,7 @@ def create_app() -> FastAPI:
     task_routes = TaskRoutes(dependency = dependency)
     user_routes = UserRoutes(dependency = dependency)
     pathfinder_routes = PathfinderRoutes()
-    text_generator_routes = TextGeneratorRoutes(api_key=os.getenv('OPENAI_API_KEY'))
+    text_generator_routes = TextGeneratorRoutes(ollama_host=os.getenv('OLLAMA_HOST'))
     app.include_router(task_routes.router)
     app.include_router(user_routes.router)
     app.include_router(pathfinder_routes.router)

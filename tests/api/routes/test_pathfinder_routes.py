@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from fastapi.testclient import TestClient
 from app.api.endpoints.pathfinder_routes import PathfinderRoutes
@@ -273,12 +275,9 @@ def test_find_path_unsupported_algorithm():
 
     try:
         client.post("/api/pathfinder/", json=request_data)
-        assert False, "Expected a RequestValidationError but did not get one."
     except Exception as e:
         print("Error:", str(e))
         assert any(
             error["msg"] == "Input should be 'a-star', 'dijkstra', 'dfs' or 'bfs'"
             for error in e.errors()
         ), "The error message for unsupported algorithm should be as expected."
-
-

@@ -8,10 +8,10 @@ from app.clients.prompts import create_report_prompt
 
 
 class TextGeneratorRoutes:
-    def __init__(self, api_key: str):
+    def __init__(self, ollama_host: str):
         # self.open_ai_client = OpenAIClient(api_key=api_key)
         self.router = APIRouter()
-        self.llama_client = OllamaClient(os.environ.get('OLLAMA_HOST'))
+        self.llama_client = OllamaClient(ollama_host)
 
         @self.router.post("/api/generateText")
         async def generate_text(request_body: GenerateTextRequest):
