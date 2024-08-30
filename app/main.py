@@ -1,7 +1,9 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .api.endpoints import TaskRoutes, UserRoutes
+from .api.endpoints import TaskRoutes, UserRoutes, PathfinderRoutes, TextGeneratorRoutes
 from .core.initializer import AppInitializer
 from .db.database import database_instance
 from .dependencies import Dependency
@@ -26,8 +28,12 @@ def create_app() -> FastAPI:
     # Include routers
     task_routes = TaskRoutes(dependency = dependency)
     user_routes = UserRoutes(dependency = dependency)
+    pathfinder_routes = PathfinderRoutes()
+    text_generator_routes = TextGeneratorRoutes(api_key=os.getenv('OPENAI_API_KEY'))
     app.include_router(task_routes.router)
     app.include_router(user_routes.router)
+    app.include_router(pathfinder_routes.router)
+    app.include_router(text_generator_routes.router)
 
 
 
